@@ -8,6 +8,7 @@
   const pdfTitle = document.querySelector("#pdfTitle");
   const object = document.querySelector("#pdfObject");
   const fallback = document.querySelector("#pdfFallback");
+  const directLink = document.querySelector("#pdfOpenDirect");
   const backButton = document.querySelector("[data-go-back]");
   const pdfOpenParams = spreadMode ? `#page=1&zoom=${encodeURIComponent(zoom || "page-fit")}&pagelayout=TwoPageRight&pagemode=none&navpanes=0` : "";
   const viewerFile = file.includes("#") ? file : `${file}${pdfOpenParams}`;
@@ -18,6 +19,7 @@
   pdfTitle.textContent = title;
   object.data = viewerFile;
   fallback.href = viewerFile;
+  directLink.href = viewerFile;
 
   backButton?.addEventListener("click", () => {
     if (returnUrl) window.location.href = returnUrl;
