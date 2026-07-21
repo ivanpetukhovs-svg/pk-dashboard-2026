@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Документ | Московский Политех</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/viewer.css">
+  </head>
+  <body class="viewer-page viewer-page--pdf">
+    <main class="viewer-shell viewer-shell--pdf">
+      <header class="viewer-header">
+        <img src="assets/img/polytech_logo_main_RGB_RUS.png" alt="Московский Политех">
+        <div>
+          <p>Документ приемной кампании</p>
+          <h1 id="pdfTitle">Документ</h1>
+        </div>
+        <div class="viewer-actions">
+          <button type="button" data-go-back>Назад</button>
+          <a href="index.html">На главную</a>
+        </div>
+      </header>
+      <section class="pdf-frame">
+        <object id="pdfObject" data="" type="application/pdf">
+          <p>Если PDF не открылся внутри страницы, откройте его в браузере через ссылку ниже.</p>
+          <a id="pdfFallback" href="#">Открыть PDF</a>
+        </object>
+      </section>
+    </main>
+    <script src="assets/js/pdf-viewer.js"></script>
+  </body>
+</html>

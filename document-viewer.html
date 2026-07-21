@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Скрипт консультации | Московский Политех</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/viewer.css">
+  </head>
+  <body class="viewer-page">
+    <main class="viewer-shell">
+      <header class="viewer-header">
+        <img src="assets/img/polytech_logo_main_RGB_RUS.png" alt="Московский Политех">
+        <div>
+          <p>Скрипт взаимодействия</p>
+          <h1 id="docTitle">Материал</h1>
+        </div>
+        <div class="viewer-actions">
+          <button type="button" data-go-back>Назад</button>
+          <button type="button" data-open-script-pdf>PDF-версия</button>
+          <a href="index.html">На главную</a>
+        </div>
+      </header>
+      <section class="script-viewer-layout">
+        <aside class="script-nav" id="scriptNav"></aside>
+        <section class="viewer-content script-viewer-content" id="docContent"></section>
+      </section>
+    </main>
+    <script src="assets/js/script-pages-data.js"></script>
+    <script src="assets/js/document-viewer.js"></script>
+  </body>
+</html>

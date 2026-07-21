@@ -1,0 +1,35 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Программа лояльности | Московский Политех</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/viewer.css">
+  </head>
+  <body class="viewer-page">
+    <main class="viewer-shell">
+      <header class="viewer-header">
+        <img src="assets/img/polytech_logo_main_RGB_RUS.png" alt="Московский Политех">
+        <div>
+          <p>Платная основа</p>
+          <h1>Программа лояльности и скидки</h1>
+        </div>
+        <div class="viewer-actions">
+          <button type="button" data-go-back>Назад</button>
+          <button type="button" data-open-loyalty-pdf>PDF-версия</button>
+          <a href="index.html">На главную</a>
+        </div>
+      </header>
+      <section class="viewer-content">
+        <div class="loyalty-tabs" role="tablist" aria-label="Версии материала">
+          <button class="is-active" type="button" data-loyalty-tab="short">Краткая версия</button>
+          <button type="button" data-loyalty-tab="full">Полная версия</button>
+        </div>
+        <div id="loyaltyContent"></div>
+      </section>
+    </main>
+    <script src="assets/js/loyalty-data.js"></script>
+    <script src="assets/js/loyalty-viewer.js"></script>
+  </body>
+</html>

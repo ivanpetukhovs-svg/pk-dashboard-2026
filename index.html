@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Приемная кампания 2026 | Московский Политех</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+  </head>
+  <body class="dashboard-page">
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="https://mospolytech.ru/" target="_blank" rel="noopener noreferrer" aria-label="Московский Политех">
+          <img src="assets/img/polytech_logo_main_RGB_RUS.png" alt="Московский Политех" class="brand__logo">
+        </a>
+
+        <div class="page-title">
+          <p>ПРИЕМНАЯ КАМПАНИЯ 2026</p>
+          <h1>материалы для работы с абитуриентами</h1>
+        </div>
+
+        <div class="top-actions">
+          <button class="top-action" type="button" data-open-deadlines>
+            <span class="button-icon" aria-hidden="true">
+              <svg viewBox="0 0 24 24"><path d="M7 3v3M17 3v3M4.5 9h15M6.5 5h11A2.5 2.5 0 0 1 20 7.5v10A2.5 2.5 0 0 1 17.5 20h-11A2.5 2.5 0 0 1 4 17.5v-10A2.5 2.5 0 0 1 6.5 5Z"/></svg>
+            </span>
+            Сроки приема
+          </button>
+        </div>
+      </header>
+
+      <main>
+        <section class="dashboard-grid" aria-label="Главная панель">
+          <aside class="topics-panel">
+            <div class="panel-heading">
+              <p>Навигация</p>
+              <h2>Направления и темы</h2>
+            </div>
+            <div class="topic-list" id="topicList"></div>
+          </aside>
+
+          <section class="hero-card" id="heroCard">
+            <div class="hero-copy">
+              <p class="eyebrow" id="heroEyebrow">Московский Политех</p>
+              <h2 id="heroTitle">твой технологичный старт</h2>
+              <p id="heroDescription">Практика, технологии, творчество и уверенный старт в профессии будущего.</p>
+              <div class="hero-points" id="heroPoints"></div>
+              <div class="hero-actions">
+                <button class="primary-action" type="button" data-open-theme>
+                  <span class="button-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+                  </span>
+                  О направлении
+                </button>
+                <button class="secondary-action" type="button" data-open-scripts>
+                  Скрипты
+                </button>
+              </div>
+            </div>
+            <div class="hero-visual" aria-hidden="true">
+              <img src="assets/img/visual-code-line.svg" alt="">
+            </div>
+          </section>
+
+          <aside class="faq-panel">
+            <div class="panel-heading">
+              <p>FAQ</p>
+              <h2>Частые вопросы абитуриентов</h2>
+            </div>
+            <div class="faq-list" id="faqList"></div>
+            <button class="wide-link" type="button" data-show-all-faq>Показать все вопросы</button>
+          </aside>
+        </section>
+
+        <section class="materials-section">
+          <div class="section-heading">
+            <p>Быстрый доступ</p>
+            <h2>Материалы для работы</h2>
+          </div>
+          <div class="materials-grid" id="materialsGrid"></div>
+        </section>
+      </main>
+    </div>
+
+    <div class="modal-backdrop" id="modalBackdrop" hidden>
+      <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+        <button class="modal-close" type="button" aria-label="Закрыть окно" data-close-modal>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg>
+        </button>
+        <div class="modal-body">
+          <p class="modal-kicker" id="modalKicker"></p>
+          <h2 id="modalTitle"></h2>
+          <div class="modal-content" id="modalContent"></div>
+          <div class="modal-actions" id="modalActions"></div>
+        </div>
+      </section>
+    </div>
+
+    <script src="assets/js/data.js"></script>
+    <script src="assets/js/app.js"></script>
+  </body>
+</html>

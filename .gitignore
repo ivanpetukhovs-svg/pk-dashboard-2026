@@ -1,0 +1,12 @@
+# Local and generated files
+backups/
+*.zip
+*.rar
+*.log
+Thumbs.db
+Desktop.ini
+
+# Editors and operating-system files
+.DS_Store
+.vscode/
+.idea/

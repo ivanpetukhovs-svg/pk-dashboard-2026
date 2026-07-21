@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Баллы, места, стоимость | Московский Политех</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/viewer.css">
+    <link rel="stylesheet" href="assets/css/admission-numbers.css">
+  </head>
+  <body class="viewer-page admission-page">
+    <main class="viewer-shell admission-shell">
+      <header class="viewer-header">
+        <img src="assets/img/polytech_logo_main_RGB_RUS.png" alt="Московский Политех">
+        <div>
+          <p>Справочник приема 2026</p>
+          <h1>Баллы, места, стоимость обучения</h1>
+        </div>
+        <div class="viewer-actions">
+          <button type="button" data-go-back>Назад</button>
+          <a href="index.html">На главную</a>
+        </div>
+      </header>
+
+      <section class="admission-hero">
+        <div>
+          <p>Официальные приложения</p>
+          <h2>Баллы, места и стоимость</h2>
+          <span>Здесь собраны исходные PDF-файлы приемной кампании: количество мест, минимальные баллы, творческие минимумы и стоимость обучения. Для консультации открывайте нужный документ и сверяйте данные с оригиналом.</span>
+        </div>
+        <div class="admission-hero-note">
+          <strong>Что смотреть</strong>
+          <span>Количество мест</span>
+          <span>Минимальные баллы</span>
+          <span>Минимальный балл по творческому направлению</span>
+          <span>Стоимость обучения</span>
+        </div>
+      </section>
+
+      <section class="admission-doc-grid" id="admissionDocGrid"></section>
+    </main>
+
+    <script src="assets/js/admission-numbers-data.js"></script>
+    <script src="assets/js/admission-numbers.js"></script>
+  </body>
+</html>

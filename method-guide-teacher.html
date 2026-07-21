@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>Методические указания ПК-2026: версия для преподавателя | Московский Политех</title>
+    <link rel="stylesheet" href="assets/css/styles.css">
+    <link rel="stylesheet" href="assets/css/viewer.css">
+    <link rel="stylesheet" href="assets/css/method-guide-teacher.css">
+  </head>
+  <body class="viewer-page">
+    <main class="viewer-shell teacher-shell">
+      <header class="viewer-header teacher-header">
+        <img src="assets/img/polytech_logo_main_RGB_RUS.png" alt="Московский Политех">
+        <div>
+          <p>Интерактивная памятка</p>
+          <h1>Методические указания ПК-2026: версия для преподавателя</h1>
+        </div>
+        <div class="viewer-actions">
+          <button type="button" data-go-back>Назад</button>
+          <a href="method-guide.html">Текущая версия</a>
+          <a href="index.html">На главную</a>
+        </div>
+      </header>
+
+      <section class="teacher-hero">
+        <div>
+          <p>Краткая навигация по правилам приема с доступом к полной официальной информации.</p>
+          <h2>Помогает быстро сориентировать абитуриента и вовремя направить в приемную комиссию.</h2>
+        </div>
+        <strong>
+          Краткие пояснения помогают сориентироваться, но официальным основанием являются правила приема и полная методическая информация. В спорных случаях абитуриента необходимо направлять в приемную комиссию.
+        </strong>
+      </section>
+
+      <section class="teacher-tools" aria-label="Фильтры страницы">
+        <label class="teacher-search">
+          <span>Поиск</span>
+          <input type="search" id="teacherSearch" placeholder="Раздел, термин, документ, квота">
+        </label>
+        <div class="teacher-mode" id="teacherMode" role="group" aria-label="Режим просмотра">
+          <button type="button" class="is-active" data-mode="brief">Кратко</button>
+          <button type="button" data-mode="official">Полная информация</button>
+          <button type="button" data-mode="script">Что сказать абитуриенту</button>
+        </div>
+      </section>
+
+      <nav class="teacher-quick" id="teacherQuick" aria-label="Быстрые разделы"></nav>
+
+      <section class="teacher-layout">
+        <aside class="teacher-nav" id="teacherNav"></aside>
+        <div class="teacher-content" id="teacherContent"></div>
+      </section>
+    </main>
+
+    <script src="assets/js/method-guide-data.js"></script>
+    <script src="assets/js/method-guide-teacher-data.js"></script>
+    <script src="assets/js/method-guide-teacher.js"></script>
+  </body>
+</html>
