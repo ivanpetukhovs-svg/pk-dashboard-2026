@@ -10,6 +10,14 @@
   const modalTitle = document.querySelector("#modalTitle");
   const modalContent = document.querySelector("#modalContent");
   const modalActions = document.querySelector("#modalActions");
+  const topicPrev = document.querySelector("[data-topic-prev]");
+  const topicNext = document.querySelector("[data-topic-next]");
+  const topicPosition = document.querySelector("#topicPosition");
+  const mobileQuery = window.matchMedia("(max-width: 900px), (max-height: 500px) and (max-width: 1000px)");
+  const appShell = document.querySelector(".app-shell");
+  let lastFocusedElement = null;
+  let scriptsReturn = null;
+  let topicScrollFrame = null;
 
   function icon(name) {
     const icons = {
@@ -38,12 +46,49 @@
   }
 
   function renderTopics() {
-    topicList.innerHTML = data.themes.filter((theme) => theme.id !== "polytech").map((theme) => `
-      <button class="topic-item ${theme.id === activeTheme.id ? "is-active" : ""}" type="button" data-theme-id="${theme.id}" style="--topic-accent:${theme.accent}">
+    const themes = data.themes.filter((theme) => theme.id !== "polytech");
+    topicList.innerHTML = themes.map((theme, index) => `
+      <button class="topic-item ${theme.id === activeTheme.id ? "is-active" : ""}" type="button" data-theme-id="${theme.id}" data-topic-index="${index}" aria-pressed="${theme.id === activeTheme.id}" style="--topic-accent:${theme.accent}">
         <span class="topic-dot"></span>
         <span>${theme.menuTitle}</span>
       </button>
     `).join("");
+    updateTopicCarousel();
+  }
+
+  function topicItems() {
+    return Array.from(topicList.querySelectorAll("[data-topic-index]"));
+  }
+
+  function currentTopicIndex() {
+    const items = topicItems();
+    if (!items.length) return 0;
+    return items.reduce((closest, item, index) => {
+      const distance = Math.abs(item.offsetLeft - topicList.scrollLeft);
+      return distance < closest.distance ? { index, distance } : closest;
+    }, { index: 0, distance: Number.POSITIVE_INFINITY }).index;
+  }
+
+  function updateTopicCarousel(index = currentTopicIndex()) {
+    const items = topicItems();
+    if (!items.length || !topicPosition || !topicPrev || !topicNext) return;
+    const safeIndex = Math.max(0, Math.min(index, items.length - 1));
+    topicPosition.textContent = `${safeIndex + 1} из ${items.length}`;
+    topicPrev.disabled = safeIndex === 0;
+    topicNext.disabled = safeIndex === items.length - 1;
+  }
+
+  function scrollToTopic(index, focus = false) {
+    const items = topicItems();
+    const safeIndex = Math.max(0, Math.min(index, items.length - 1));
+    const item = items[safeIndex];
+    if (!item) return;
+    topicList.scrollTo({
+      left: item.offsetLeft,
+      behavior: window.matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"
+    });
+    updateTopicCarousel(safeIndex);
+    if (focus) item.focus({ preventScroll: true });
   }
 
   function renderHero() {
@@ -56,11 +101,32 @@
 
   function renderFaq(limit = 8) {
     faqList.innerHTML = data.faq.slice(0, limit).map((item, index) => `
-      <button class="faq-item" type="button" data-faq-index="${index}">
-        <span>${item.question}</span>
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
-      </button>
+      <div class="faq-entry">
+        <button class="faq-item" type="button" data-faq-index="${index}" aria-expanded="false" aria-controls="faqAnswer${index}">
+          <span>${item.question}</span>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg>
+        </button>
+        <div class="faq-answer" id="faqAnswer${index}" hidden>
+          <p>${item.answer}</p>
+          <a class="faq-answer__link" href="${item.action?.file || "method-guide.html"}">${item.action?.label || "Методические указания"}</a>
+        </div>
+      </div>
     `).join("");
+  }
+
+  function toggleFaq(button) {
+    const answer = document.querySelector(`#${button.getAttribute("aria-controls")}`);
+    if (!answer) return;
+    const willOpen = button.getAttribute("aria-expanded") !== "true";
+    faqList.querySelectorAll("[data-faq-index]").forEach((item) => {
+      item.setAttribute("aria-expanded", "false");
+      const panel = document.querySelector(`#${item.getAttribute("aria-controls")}`);
+      if (panel) panel.hidden = true;
+    });
+    if (willOpen) {
+      button.setAttribute("aria-expanded", "true");
+      answer.hidden = false;
+    }
   }
 
   function renderMaterials() {
@@ -76,9 +142,19 @@
   function closeModal() {
     modalBackdrop.hidden = true;
     document.body.classList.remove("modal-open");
+    if (appShell) {
+      appShell.removeAttribute("aria-hidden");
+      appShell.inert = false;
+    }
+    if (lastFocusedElement && document.contains(lastFocusedElement)) {
+      lastFocusedElement.focus();
+    }
+    lastFocusedElement = null;
   }
 
   function openModal({ kicker = "", title, content = "", actions = [] }) {
+    const openingFromPage = modalBackdrop.hidden;
+    if (openingFromPage) lastFocusedElement = document.activeElement;
     const visibleActions = actions.filter((action) => {
       const label = String(action.label || "").toLowerCase();
       return action.onClick !== closeModal && label !== "закрыть" && label !== "понятно";
@@ -101,6 +177,12 @@
     });
     modalBackdrop.hidden = false;
     document.body.classList.add("modal-open");
+    if (appShell) {
+      appShell.setAttribute("aria-hidden", "true");
+      appShell.inert = true;
+    }
+    const closeButton = modalBackdrop.querySelector("[data-close-modal]");
+    if (closeButton) closeButton.focus();
   }
 
   function themeContent(theme) {
@@ -136,12 +218,15 @@
 
   function openFaqModal(index) {
     const faq = data.faq[index];
+    const primaryAction = faq.action
+      ? { label: faq.action.label, onClick: () => openLocalFile(faq.action.file) }
+      : { label: "Методические указания", onClick: () => openLocalFile("method-guide.html") };
     openModal({
       kicker: "FAQ",
       title: faq.question,
       content: `<p class="large-text">${faq.answer}</p>`,
       actions: [
-        { label: "Методические указания", onClick: () => openLocalFile("method-guide.html") },
+        primaryAction,
         { label: "Закрыть", variant: "secondary", onClick: closeModal }
       ]
     });
@@ -165,7 +250,49 @@
     });
   }
 
-  function openScriptsModal() {
+  function returnTarget(returnKey) {
+    const targets = {
+      "loyalty-short": { label: "Вернуться к программе лояльности", file: "loyalty.html" },
+      "loyalty-full": { label: "Вернуться к программе лояльности", file: "loyalty.html?tab=full" },
+      "method-paid_dorm": { label: "Вернуться к методическим указаниям", file: "method-guide.html?section=paid_dorm" }
+    };
+    return targets[returnKey] || null;
+  }
+
+  function openScriptsModal(returnKey = scriptsReturn) {
+    scriptsReturn = returnKey || null;
+    const highAchieverRows = `
+      <section class="priority-scripts" id="highAchieverScripts" aria-label="Общие сценарии для высокобалльников">
+        <div class="priority-scripts__head">
+          <p>Приоритетные материалы</p>
+          <h3>Общие сценарии для высокобалльников</h3>
+        </div>
+        <div class="scripts-list">
+          <article class="script-row script-row--priority">
+            <div>
+              <strong>Клуб лидеров Московского Политеха</strong>
+              <span>Персональная Карта лидера на 100&nbsp;000 баллов</span>
+            </div>
+            <div class="script-row__actions">
+              <button type="button" data-high-achiever-brief="leaders-club">Сценарии</button>
+              <button type="button" data-high-achiever-page="leaders-club">Страница</button>
+              <button type="button" data-high-achiever-pdf="leaders-club">PDF</button>
+            </div>
+          </article>
+          <article class="script-row script-row--priority">
+            <div>
+              <strong>Скидка 25% на проживание в общежитии</strong>
+              <span>Для поступающих с высоким средним баллом ЕГЭ</span>
+            </div>
+            <div class="script-row__actions">
+              <button type="button" data-high-achiever-brief="dorm-discount">Сценарии</button>
+              <button type="button" data-high-achiever-page="dorm-discount">Страница</button>
+              <button type="button" data-high-achiever-pdf="dorm-discount">PDF</button>
+            </div>
+          </article>
+        </div>
+      </section>
+    `;
     const themeRows = data.themes.filter((theme) => theme.id !== "polytech").map((theme) => `
       <article class="script-row" style="--theme-accent:${theme.accent}">
         <div>
@@ -189,13 +316,18 @@
             <p>Общий сценарий</p>
             <h3>Консультация поступающего</h3>
             <span>Приветствие, квалификация запроса, сроки, документы, вступительные испытания, ДПО и завершение разговора.</span>
-            <button type="button" data-open-operator>Открыть страницу</button>
-            <button type="button" data-open-operator-pdf>PDF-версия</button>
+            <div class="operator-card__actions">
+              <button type="button" data-open-operator>Открыть страницу</button>
+              <button type="button" data-open-operator-pdf>PDF-версия</button>
+            </div>
           </article>
-          <div class="scripts-list">${themeRows}</div>
+          <div class="scripts-list scripts-list--all">${highAchieverRows}${themeRows}</div>
         </div>
       `,
-      actions: [{ label: "Закрыть", variant: "secondary", onClick: closeModal }]
+      actions: [
+        ...(returnTarget(scriptsReturn) ? [{ label: returnTarget(scriptsReturn).label, onClick: () => openLocalFile(returnTarget(scriptsReturn).file) }] : []),
+        { label: "Закрыть", variant: "secondary", onClick: closeModal }
+      ]
     });
 
     modalContent.querySelector("[data-open-operator]").addEventListener("click", () => openLocalFile("document-viewer.html?id=operator"));
@@ -211,6 +343,64 @@
     });
     modalContent.querySelectorAll("[data-script-pdf]").forEach((button) => {
       button.addEventListener("click", () => openLocalFile(button.dataset.scriptPdf));
+    });
+    modalContent.querySelectorAll("[data-high-achiever-brief]").forEach((button) => {
+      button.addEventListener("click", () => openHighAchieverBrief(button.dataset.highAchieverBrief));
+    });
+    modalContent.querySelectorAll("[data-high-achiever-page]").forEach((button) => {
+      button.addEventListener("click", () => openLocalFile(`document-viewer.html?id=${encodeURIComponent(button.dataset.highAchieverPage)}`));
+    });
+    modalContent.querySelectorAll("[data-high-achiever-pdf]").forEach((button) => {
+      const pdfFiles = {
+        "leaders-club": "docs/scripts_pdf/Klub_liderov.pdf",
+        "dorm-discount": "docs/scripts_pdf/Skidka_obshchezhitie_25.pdf"
+      };
+      button.addEventListener("click", () => {
+        const pdfFile = pdfFiles[button.dataset.highAchieverPdf];
+        if (pdfFile) openLocalFile(`pdf-viewer.html?file=${encodeURIComponent(pdfFile)}&title=${encodeURIComponent(button.closest(".script-row").querySelector("strong").textContent)}`);
+      });
+    });
+  }
+
+  function openHighAchieverBrief(id) {
+    const briefs = {
+      "leaders-club": {
+        title: "Клуб лидеров Московского Политеха",
+        content: `
+          <div class="theme-summary theme-summary--priority">
+            <p><strong>Условие:</strong> 85+ по каждому предмету в связке «математика + физика» или «математика + информатика». Предложение доступно на бюджете и на платной основе.</p>
+            <h3>Сценарий звонка 1</h3>
+            <p>«Здравствуйте, [Имя]! Поздравляем с сильными результатами. Они дают вам возможность стать участником Клуба лидеров Московского Политеха. Это персональная Карта лидера на 100&nbsp;000 баллов: наставник, траектория развития и первые карьерные возможности. Подскажите, что для вас сейчас важнее при выборе вуза?»</p>
+            <h3>Сценарий звонка 2</h3>
+            <p>«[Имя], с вашими результатами можно рассмотреть Клуб лидеров — отдельную программу поддержки для сильных абитуриентов. Если Московский Политех вам подходит, следующий шаг — подать согласие на зачисление; заявку в Клуб можно будет оформить после приказов. Готовы обсудить это сегодня?»</p>
+            <p><strong>Важно:</strong> говорим «можете стать участником», не обещаем автоматическое включение и не смешиваем Клуб со скидкой на общежитие.</p>
+          </div>
+        `
+      },
+      "dorm-discount": {
+        title: "Скидка 25% на проживание в общежитии",
+        content: `
+          <div class="theme-summary theme-summary--priority">
+            <p><strong>Условие:</strong> первый курс очной формы в 2026/2027 учебном году и средний балл ЕГЭ 85+ без учёта индивидуальных достижений.</p>
+            <h3>Сценарий звонка 1</h3>
+            <p>«Здравствуйте, [Имя]! Поздравляем: ваш средний балл ЕГЭ — 85 и выше. Для вас действует скидка 25% на проживание в студенческом городке и коммунальные услуги. Она предусмотрена для первокурсников очной формы и при хорошей успеваемости может сохраняться на весь период обучения.»</p>
+            <h3>Сценарий звонка 2</h3>
+            <p>«[Имя], с такими результатами при поступлении в Московский Политех вы можете получить скидку 25% на проживание и коммунальные услуги. Чтобы воспользоваться предложением, подайте согласие на зачисление. Хотите уточнить условия проживания?»</p>
+            <p><strong>Важно:</strong> скидка не действует для жилья повышенной комфортности; сохраняется при обучении без троек и двоек и соблюдении правил проживания. Это самостоятельное предложение, не Клуб лидеров.</p>
+          </div>
+        `
+      }
+    };
+    const brief = briefs[id];
+    if (!brief) return;
+    openModal({
+      kicker: "Общий сценарий",
+      title: brief.title,
+      content: brief.content,
+      actions: [
+        { label: "Открыть полный сценарий", onClick: () => openLocalFile(`document-viewer.html?id=${encodeURIComponent(id)}`) },
+        { label: "Назад к скриптам", variant: "secondary", onClick: () => openScriptsModal(scriptsReturn) }
+      ]
     });
   }
 
@@ -307,11 +497,42 @@
     activeTheme = data.themes.find((theme) => theme.id === button.dataset.themeId) || activeTheme;
     renderTopics();
     renderHero();
+    if (mobileQuery.matches) scrollToTopic(Number(button.dataset.topicIndex));
   });
+
+  topicList.addEventListener("scroll", () => {
+    if (!mobileQuery.matches || topicScrollFrame) return;
+    topicScrollFrame = window.requestAnimationFrame(() => {
+      updateTopicCarousel();
+      topicScrollFrame = null;
+    });
+  }, { passive: true });
+
+  topicList.addEventListener("keydown", (event) => {
+    if (!mobileQuery.matches || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+    event.preventDefault();
+    scrollToTopic(currentTopicIndex() + (event.key === "ArrowRight" ? 1 : -1), true);
+  });
+
+  topicPrev?.addEventListener("click", () => scrollToTopic(currentTopicIndex() - 1, true));
+  topicNext?.addEventListener("click", () => scrollToTopic(currentTopicIndex() + 1, true));
 
   faqList.addEventListener("click", (event) => {
     const button = event.target.closest("[data-faq-index]");
-    if (button) openFaqModal(Number(button.dataset.faqIndex));
+    if (!button) return;
+    if (mobileQuery.matches) toggleFaq(button);
+    else openFaqModal(Number(button.dataset.faqIndex));
+  });
+
+  mobileQuery.addEventListener("change", (event) => {
+    if (!event.matches) {
+      faqList.querySelectorAll("[data-faq-index]").forEach((button) => {
+        button.setAttribute("aria-expanded", "false");
+        const panel = document.querySelector(`#${button.getAttribute("aria-controls")}`);
+        if (panel) panel.hidden = true;
+      });
+    }
+    updateTopicCarousel();
   });
 
   materialsGrid.addEventListener("click", (event) => {
@@ -332,10 +553,30 @@
 
   document.addEventListener("keydown", (event) => {
     if (event.key === "Escape" && !modalBackdrop.hidden) closeModal();
+    if (event.key !== "Tab" || modalBackdrop.hidden) return;
+
+    const focusable = Array.from(modalBackdrop.querySelectorAll("button:not([disabled]), [href], input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex='-1'])"))
+      .filter((element) => !element.hidden && element.offsetParent !== null);
+    if (!focusable.length) return;
+
+    const first = focusable[0];
+    const last = focusable[focusable.length - 1];
+    if (event.shiftKey && document.activeElement === first) {
+      event.preventDefault();
+      last.focus();
+    } else if (!event.shiftKey && document.activeElement === last) {
+      event.preventDefault();
+      first.focus();
+    }
   });
 
   renderTopics();
   renderHero();
   renderFaq();
   renderMaterials();
+
+  const query = new URLSearchParams(window.location.search);
+  if (query.get("open") === "high-achievers") {
+    openScriptsModal(query.get("return"));
+  }
 })();

@@ -73,6 +73,10 @@
   gap: 10px;
 }
 
+.mobile-nav-toggle {
+  display: none;
+}
+
 .viewer-header button {
   color: var(--brand-black);
   background: #f4f6fb;
@@ -115,6 +119,41 @@
   line-height: 1.48;
   overflow-wrap: anywhere;
   word-break: normal;
+}
+
+.high-achiever-reference {
+  display: grid;
+  gap: 8px;
+  margin-top: 20px;
+  padding: 18px;
+  background: #fff4f5;
+  border: 1px solid rgba(236, 37, 80, 0.25);
+  border-left: 5px solid var(--brand-red);
+  border-radius: 14px;
+}
+
+.high-achiever-reference strong {
+  color: var(--brand-red);
+  font-size: 18px;
+}
+
+.high-achiever-reference span {
+  color: #3d4350;
+  font-size: 17px;
+  line-height: 1.35;
+}
+
+.high-achiever-link {
+  display: inline-flex;
+  align-items: center;
+  justify-self: start;
+  min-height: 42px;
+  padding: 0 16px;
+  color: #fff;
+  text-decoration: none;
+  background: var(--brand-red);
+  border-radius: 12px;
+  font-weight: 800;
 }
 
 .script-viewer-layout {

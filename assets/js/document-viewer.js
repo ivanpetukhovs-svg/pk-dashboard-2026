@@ -102,13 +102,13 @@
 
   function renderContent() {
     const sectionCount = doc.sections.length;
-    const paragraphCount = (doc.paragraphs || []).length;
+    const itemCount = doc.sections.reduce((total, section) => total + (section.items || []).length, 0);
 
     content.innerHTML = `
       <article class="script-overview">
         <p>Интерактивная версия</p>
         <h2>${escapeHtml(doc.title)}</h2>
-        <span>${sectionCount} разделов, ${paragraphCount} текстовых блоков. Оригинал сохранен в PDF-версии.</span>
+        <span>${sectionCount} разделов, ${itemCount} рабочих блоков.</span>
       </article>
       <div class="script-sections">
         ${doc.sections.map((section) => `
@@ -138,8 +138,9 @@
 
   document.title = `${doc.title} | Московский Политех`;
   title.textContent = doc.title;
+  pdfButton.hidden = !doc.pdfFile;
 
-  pdfButton.addEventListener("click", openPdf);
+  if (doc.pdfFile) pdfButton.addEventListener("click", openPdf);
   backButton?.addEventListener("click", () => {
     if (window.history.length > 1) window.history.back();
     else window.location.href = "index.html";

@@ -25,6 +25,11 @@
       <article class="summary-card">
         <h2>Кратко для консультации</h2>
         <ul>${data.summary.concat(concrete).map((item) => `<li>${escapeHtml(item)}</li>`).join("")}</ul>
+        <div class="high-achiever-reference">
+          <strong>Дополнительные предложения для высокобалльников</strong>
+          <span>Клуб лидеров и скидка 25% на проживание в общежитии — это отдельные предложения с разными условиями.</span>
+          <a class="high-achiever-link" href="index.html?open=high-achievers&return=loyalty-short">Открыть сценарии</a>
+        </div>
       </article>
     `;
   }
@@ -49,7 +54,8 @@
           "20%: балл ЕГЭ 85+ и поданное согласие на бюджетную форму обучения.",
           "От 1% до 10%: индивидуальные достижения, включая аттестат с отличием, золотую или серебряную медаль.",
           "10%: абитуриенты, не добравшие до бюджета 1-5 баллов."
-        ]
+        ],
+        highAchieverReference: true
       },
       {
         title: "3. Комьюнити-скидки",
@@ -97,18 +103,29 @@
         <article class="slide-card">
           <h2>${escapeHtml(section.title)}</h2>
           <ul>${section.lines.map((line) => `<li>${escapeHtml(line)}</li>`).join("")}</ul>
+          ${section.highAchieverReference ? `
+            <div class="high-achiever-reference">
+              <strong>Дополнительные предложения</strong>
+              <span>Клуб лидеров и скидка 25% на проживание в общежитии.</span>
+              <a class="high-achiever-link" href="index.html?open=high-achievers&return=loyalty-full">Открыть сценарии для высокобалльников</a>
+            </div>
+          ` : ""}
         </article>
       `).join("")
     }</div>`;
   }
 
-  buttons.forEach((button) => {
-    button.addEventListener("click", () => {
-      buttons.forEach((item) => item.classList.remove("is-active"));
-      button.classList.add("is-active");
-      if (button.dataset.loyaltyTab === "full") renderFull();
-      else renderShort();
+  function setTab(tab) {
+    const activeTab = tab === "full" ? "full" : "short";
+    buttons.forEach((button) => {
+      button.classList.toggle("is-active", button.dataset.loyaltyTab === activeTab);
     });
+    if (activeTab === "full") renderFull();
+    else renderShort();
+  }
+
+  buttons.forEach((button) => {
+    button.addEventListener("click", () => setTab(button.dataset.loyaltyTab));
   });
 
   document.querySelector("[data-open-loyalty-pdf]").addEventListener("click", () => {
@@ -120,5 +137,5 @@
     else window.location.href = "index.html";
   });
 
-  renderShort();
+  setTab(new URLSearchParams(window.location.search).get("tab"));
 })();

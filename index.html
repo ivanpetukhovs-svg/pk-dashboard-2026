@@ -2,7 +2,7 @@
 <html lang="ru">
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Приемная кампания 2026 | Московский Политех</title>
     <link rel="stylesheet" href="assets/css/styles.css">
     <link rel="stylesheet" href="assets/css/mobile.css">
@@ -36,7 +36,14 @@
               <p>Навигация</p>
               <h2>Направления и темы</h2>
             </div>
-            <div class="topic-list" id="topicList"></div>
+            <div class="topic-carousel" aria-label="Карусель направлений">
+              <div class="topic-carousel__controls">
+                <button type="button" data-topic-prev aria-label="Предыдущее направление">‹</button>
+                <span id="topicPosition" aria-live="polite">1 из 9</span>
+                <button type="button" data-topic-next aria-label="Следующее направление">›</button>
+              </div>
+              <div class="topic-list" id="topicList" tabindex="0" aria-label="Направления подготовки"></div>
+            </div>
           </aside>
 
           <section class="hero-card" id="heroCard">
@@ -68,7 +75,7 @@
               <h2>Частые вопросы абитуриентов</h2>
             </div>
             <div class="faq-list" id="faqList"></div>
-            <button class="wide-link" type="button" data-show-all-faq>Показать все вопросы</button>
+            <button class="wide-link" type="button" data-show-all-faq>Открыть справочник FAQ</button>
           </aside>
         </section>
 

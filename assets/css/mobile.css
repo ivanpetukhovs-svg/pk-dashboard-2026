@@ -1,6 +1,6 @@
 /* Responsive layer shared by the dashboard and every content viewer. */
 
-@media (max-width: 1500px) {
+@media (max-width: 1100px) {
   body.dashboard-page,
   html:has(body.dashboard-page) {
     height: auto;
@@ -51,7 +51,7 @@
   }
 }
 
-@media (max-width: 900px) {
+@media (max-width: 900px), (max-height: 500px) and (max-width: 1000px) {
   :root {
     --radius: 18px;
     --shadow: 0 12px 34px rgba(22, 28, 45, 0.1);
@@ -593,11 +593,540 @@
   }
 }
 
-@media (max-width: 420px) {
-  .viewer-actions {
-    grid-template-columns: 1fr;
+@media (max-width: 900px), (max-height: 500px) and (max-width: 1000px) {
+  .dashboard-page .app-shell {
+    padding:
+      max(8px, env(safe-area-inset-top))
+      max(8px, env(safe-area-inset-right))
+      max(12px, env(safe-area-inset-bottom))
+      max(8px, env(safe-area-inset-left));
   }
 
+  .topbar {
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "brand actions"
+      "title title";
+    gap: 8px 12px;
+    padding: 12px 14px 13px;
+  }
+
+  .brand {
+    grid-area: brand;
+  }
+
+  .brand__logo {
+    width: min(156px, 46vw);
+    max-height: 45px;
+  }
+
+  .page-title {
+    grid-area: title;
+  }
+
+  .page-title p {
+    font-size: clamp(25px, 6.7vw, 30px);
+    line-height: 0.98;
+  }
+
+  .page-title h1 {
+    margin-top: 5px;
+    font-size: 13px;
+    line-height: 1.15;
+  }
+
+  .top-actions {
+    grid-area: actions;
+    justify-content: flex-end;
+    width: auto;
+  }
+
+  .top-actions .top-action {
+    width: auto;
+    min-height: 44px;
+    padding: 0 11px;
+    gap: 7px;
+    font-size: 13px;
+  }
+
+  .top-actions .button-icon,
+  .top-actions .button-icon svg {
+    width: 20px;
+    height: 20px;
+  }
+
+  .hero-card {
+    padding: 17px 16px 18px;
+  }
+
+  .hero-visual {
+    display: none;
+  }
+
+  .hero-copy h2 {
+    font-size: clamp(34px, 9.2vw, 40px);
+    line-height: 0.96;
+  }
+
+  .hero-copy p:not(.eyebrow) {
+    margin-top: 12px;
+    font-size: 16px;
+    line-height: 1.28;
+  }
+
+  .hero-points {
+    gap: 6px;
+    margin-top: 13px;
+  }
+
+  .hero-points span {
+    min-height: 30px;
+    padding: 6px 10px;
+    font-size: 12px;
+  }
+
+  .hero-actions {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    margin-top: 14px;
+  }
+
+  .hero-actions > * {
+    min-width: 0;
+    min-height: 46px;
+    padding: 0 10px;
+    font-size: 14px;
+  }
+
+  .topics-panel {
+    padding: 15px 14px;
+  }
+
+  .topic-carousel {
+    min-width: 0;
+  }
+
+  .topic-carousel__controls {
+    display: grid;
+    grid-template-columns: 42px auto 42px;
+    align-items: center;
+    justify-content: end;
+    gap: 7px;
+    margin: 7px 0 6px;
+  }
+
+  .topic-carousel__controls button {
+    display: grid;
+    place-items: center;
+    width: 42px;
+    height: 42px;
+    padding: 0;
+    color: #111319;
+    background: #f4f6fb;
+    border: 1px solid var(--line);
+    border-radius: 13px;
+    font: inherit;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .topic-carousel__controls button:disabled {
+    color: #a8adba;
+    background: #fafbfe;
+  }
+
+  .topic-carousel__controls span {
+    min-width: 56px;
+    color: var(--muted);
+    font-size: 13px;
+    font-weight: 800;
+    text-align: center;
+  }
+
+  .topic-list {
+    gap: 9px;
+    margin: 0;
+    padding: 2px 42px 3px 2px;
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    scroll-padding-inline: 2px 42px;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .topic-list::-webkit-scrollbar {
+    display: none;
+  }
+
+  .topic-item {
+    flex: 0 0 calc(100% - 42px);
+    min-height: 64px;
+    padding: 10px 12px;
+    scroll-snap-align: start;
+    scroll-snap-stop: always;
+  }
+
+  .topic-item span:last-child {
+    font-size: 15px;
+  }
+
+  .faq-panel {
+    padding: 15px 14px;
+  }
+
+  .faq-entry {
+    border: 1px solid #edf0f6;
+    border-radius: 14px;
+    overflow: hidden;
+  }
+
+  .faq-item {
+    min-height: 50px;
+    padding: 10px 12px;
+    background: #f8f9fd;
+    border: 0;
+    border-radius: 0;
+  }
+
+  .faq-item svg {
+    transition: transform 160ms ease;
+  }
+
+  .faq-item[aria-expanded="true"] svg {
+    transform: rotate(90deg);
+  }
+
+  .faq-answer {
+    padding: 0 12px 13px;
+    background: #f8f9fd;
+  }
+
+  .faq-answer p {
+    margin: 0;
+    color: #454c5d;
+    font-size: 15px;
+    line-height: 1.4;
+  }
+
+  .faq-answer__link {
+    display: inline-flex;
+    align-items: center;
+    min-height: 42px;
+    margin-top: 11px;
+    padding: 0 13px;
+    color: #fff;
+    text-decoration: none;
+    background: var(--brand-red);
+    border-radius: 11px;
+    font-size: 14px;
+    font-weight: 800;
+  }
+
+  [data-show-all-faq] {
+    display: none;
+  }
+
+  .materials-section {
+    padding: 15px 14px;
+  }
+
+  .material-card {
+    grid-template-columns: 44px minmax(0, 1fr);
+    padding: 11px 12px;
+  }
+
+  .material-icon {
+    width: 44px;
+    height: 44px;
+  }
+
+  .material-card strong {
+    font-size: 17px;
+  }
+
+  .material-card span:last-child {
+    font-size: 13px;
+  }
+
+  .modal-backdrop {
+    padding:
+      max(6px, env(safe-area-inset-top))
+      max(6px, env(safe-area-inset-right))
+      max(6px, env(safe-area-inset-bottom))
+      max(6px, env(safe-area-inset-left));
+  }
+
+  .modal {
+    max-height: calc(100dvh - max(12px, env(safe-area-inset-top) + env(safe-area-inset-bottom)));
+  }
+
+  .modal-close {
+    z-index: 2;
+  }
+
+  .modal-body {
+    overscroll-behavior: contain;
+    padding: 20px 14px max(20px, env(safe-area-inset-bottom));
+  }
+
+  .modal h2 {
+    margin-bottom: 16px;
+    padding-right: 46px;
+    font-size: 27px;
+  }
+
+  .operator-card {
+    min-height: 0;
+    padding: 18px;
+  }
+
+  .operator-card h3 {
+    font-size: 25px;
+  }
+
+  .operator-card__actions {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 8px;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .operator-card__actions button {
+    width: 100%;
+    min-height: 44px;
+    margin: 0;
+    padding: 0 8px;
+    font-size: 13px;
+    line-height: 1.15;
+  }
+
+  .priority-scripts {
+    padding: 8px;
+  }
+
+  .priority-scripts__head {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .priority-scripts__head h3 {
+    font-size: 17px;
+  }
+
+  .script-row {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .script-row strong {
+    font-size: 17px;
+    line-height: 1.16;
+  }
+
+  .script-row span {
+    font-size: 14px;
+    line-height: 1.3;
+  }
+
+  .script-row__actions {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    width: 100%;
+  }
+
+  .script-row__actions button {
+    width: 100%;
+    min-width: 0;
+    min-height: 44px;
+    padding: 0 5px;
+    font-size: 13px;
+    line-height: 1.1;
+  }
+
+  .viewer-page {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+
+  .script-viewer-layout,
+  .method-layout,
+  .teacher-layout,
+  .achievements-layout {
+    align-items: start;
+  }
+
+  .script-nav.mobile-nav-ready,
+  .method-nav.mobile-nav-ready,
+  .teacher-nav.mobile-nav-ready,
+  .achievements-nav.mobile-nav-ready {
+    position: sticky;
+    z-index: 8;
+    top: max(8px, env(safe-area-inset-top));
+    max-height: 60dvh;
+    padding: 8px;
+    overflow: auto;
+    overscroll-behavior: contain;
+  }
+
+  .mobile-nav-toggle {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 28px;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 52px;
+    padding: 8px 10px;
+    text-align: left;
+    background: #f8f9fd;
+    border: 1px solid var(--line);
+    border-radius: 14px;
+    font: inherit;
+  }
+
+  .mobile-nav-toggle span,
+  .mobile-nav-toggle small,
+  .mobile-nav-toggle strong {
+    display: block;
+    min-width: 0;
+  }
+
+  .mobile-nav-toggle small {
+    color: var(--brand-red);
+    font-size: 10px;
+    font-weight: 800;
+    text-transform: uppercase;
+  }
+
+  .mobile-nav-toggle strong {
+    margin-top: 2px;
+    overflow: hidden;
+    font-size: 14px;
+    line-height: 1.15;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .mobile-nav-toggle b {
+    color: var(--brand-red);
+    font-size: 24px;
+    font-weight: 500;
+    text-align: center;
+    transition: transform 160ms ease;
+  }
+
+  [data-mobile-nav-open="true"] .mobile-nav-toggle b {
+    transform: rotate(180deg);
+  }
+
+  [data-mobile-nav-open="false"] > :not(.mobile-nav-toggle) {
+    display: none !important;
+  }
+
+  [data-mobile-nav-open="true"] > .mobile-nav-toggle {
+    position: sticky;
+    z-index: 1;
+    top: 0;
+    margin-bottom: 8px;
+  }
+
+  .script-viewer-content,
+  .method-content,
+  .teacher-content,
+  .achievements-content {
+    scroll-margin-top: 76px;
+  }
+
+  .viewer-header,
+  .viewer-page--spread .viewer-header {
+    grid-template-columns: minmax(108px, 132px) minmax(0, 1fr);
+    grid-template-areas:
+      "logo title"
+      "actions actions";
+    gap: 9px 12px;
+    padding: 12px;
+  }
+
+  .viewer-header > img,
+  .viewer-page--spread .viewer-header img {
+    grid-area: logo;
+    width: min(132px, 34vw);
+    max-height: 44px;
+  }
+
+  .viewer-header > div:not(.viewer-actions) {
+    grid-area: title;
+    min-width: 0;
+  }
+
+  .viewer-header p {
+    margin-bottom: 4px;
+    font-size: 10px;
+    line-height: 1.1;
+  }
+
+  .viewer-header h1 {
+    font-size: clamp(22px, 6.3vw, 29px);
+    line-height: 1.02;
+  }
+
+  .viewer-actions {
+    grid-area: actions;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(88px, 1fr));
+    width: 100%;
+    gap: 6px;
+  }
+
+  .viewer-header a,
+  .viewer-header button {
+    min-width: 0;
+    min-height: 44px;
+    padding: 5px 7px;
+    font-size: 12px;
+    line-height: 1.12;
+  }
+
+  .loyalty-tabs {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 7px;
+  }
+
+  .loyalty-tabs button {
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  .teacher-mode {
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+
+  .teacher-mode::-webkit-scrollbar {
+    display: none;
+  }
+
+  .teacher-mode button {
+    flex: 0 0 min(74vw, 250px);
+    min-height: 44px;
+    font-size: 13px;
+  }
+
+  input,
+  select,
+  textarea {
+    font-size: 16px;
+  }
+}
+
+@media (max-width: 420px) {
   .page-title p {
     font-size: 25px;
   }
