@@ -16,41 +16,53 @@
 
   function updateLabel(nav) {
     const label = nav.querySelector("[data-mobile-nav-current]");
-    if (label) label.textContent = currentLabel(nav);
+    const nextLabel = currentLabel(nav);
+    if (label && label.textContent !== nextLabel) label.textContent = nextLabel;
   }
 
   navigationTargets.forEach(([navSelector, contentSelector]) => {
     const nav = document.querySelector(navSelector);
     if (!nav) return;
 
-    const toggle = document.createElement("button");
-    toggle.className = "mobile-nav-toggle";
-    toggle.type = "button";
-    toggle.setAttribute("aria-expanded", "false");
-    toggle.innerHTML = `
-      <span>
-        <small>Разделы</small>
-        <strong data-mobile-nav-current>${currentLabel(nav)}</strong>
-      </span>
-      <b aria-hidden="true">⌄</b>
-    `;
-    nav.prepend(toggle);
+    function ensureToggle() {
+      let toggle = nav.querySelector(":scope > .mobile-nav-toggle");
+      if (!toggle) {
+        toggle = document.createElement("button");
+        toggle.className = "mobile-nav-toggle";
+        toggle.type = "button";
+        toggle.innerHTML = `
+          <span>
+            <small>Разделы</small>
+            <strong data-mobile-nav-current>${currentLabel(nav)}</strong>
+          </span>
+          <b aria-hidden="true">⌄</b>
+        `;
+        nav.prepend(toggle);
+      }
+      const isOpen = nav.dataset.mobileNavOpen === "true";
+      toggle.setAttribute("aria-expanded", String(isOpen));
+      return toggle;
+    }
+
     nav.dataset.mobileNavOpen = "false";
     nav.classList.add("mobile-nav-ready");
-
-    toggle.addEventListener("click", () => {
-      const willOpen = nav.dataset.mobileNavOpen !== "true";
-      nav.dataset.mobileNavOpen = String(willOpen);
-      toggle.setAttribute("aria-expanded", String(willOpen));
-    });
+    ensureToggle();
 
     nav.addEventListener("click", (event) => {
-      if (!mobileQuery.matches || event.target.closest(".mobile-nav-toggle")) return;
+      const toggle = event.target.closest(".mobile-nav-toggle");
+      if (toggle) {
+        const willOpen = nav.dataset.mobileNavOpen !== "true";
+        nav.dataset.mobileNavOpen = String(willOpen);
+        toggle.setAttribute("aria-expanded", String(willOpen));
+        return;
+      }
+      if (!mobileQuery.matches) return;
       const target = event.target.closest("button, a");
       if (!target) return;
       window.requestAnimationFrame(() => {
+        const currentToggle = ensureToggle();
         nav.dataset.mobileNavOpen = "false";
-        toggle.setAttribute("aria-expanded", "false");
+        currentToggle.setAttribute("aria-expanded", "false");
         updateLabel(nav);
         document.querySelector(contentSelector)?.scrollIntoView({
           block: "start",
@@ -59,13 +71,18 @@
       });
     });
 
-    new MutationObserver(() => updateLabel(nav)).observe(nav, {
+    new MutationObserver(() => {
+      ensureToggle();
+      updateLabel(nav);
+    }).observe(nav, {
+      childList: true,
       attributes: true,
       attributeFilter: ["class"],
       subtree: true
     });
 
     mobileQuery.addEventListener("change", () => {
+      const toggle = ensureToggle();
       nav.dataset.mobileNavOpen = "false";
       toggle.setAttribute("aria-expanded", "false");
       updateLabel(nav);

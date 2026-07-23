@@ -286,6 +286,10 @@ svg {
   display: none;
 }
 
+.hero-carousel__controls {
+  display: none;
+}
+
 .topic-item {
   display: grid;
   grid-template-columns: 14px 1fr;

@@ -625,8 +625,10 @@
   }
 
   .page-title p {
-    font-size: clamp(25px, 6.7vw, 30px);
-    line-height: 0.98;
+    font-size: clamp(19px, 5.2vw, 23px);
+    line-height: 1;
+    letter-spacing: -0.02em;
+    white-space: nowrap;
   }
 
   .page-title h1 {
@@ -656,7 +658,66 @@
   }
 
   .hero-card {
+    display: flex;
+    flex-direction: column;
     padding: 17px 16px 18px;
+    outline: none;
+    touch-action: pan-y;
+  }
+
+  .hero-card:focus-visible {
+    box-shadow: 0 0 0 3px rgba(236, 37, 80, 0.34), var(--shadow);
+  }
+
+  .hero-carousel__controls {
+    position: relative;
+    z-index: 3;
+    display: grid;
+    grid-template-columns: 44px minmax(0, 1fr) 44px;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 13px;
+  }
+
+  .hero-carousel__controls button {
+    display: grid;
+    place-items: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    color: #fff;
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.18);
+    border-radius: 14px;
+    font-size: 28px;
+    line-height: 1;
+  }
+
+  .hero-carousel__controls button:disabled {
+    color: rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.04);
+  }
+
+  .hero-carousel__status {
+    display: flex;
+    align-items: baseline;
+    justify-content: center;
+    gap: 7px;
+    min-width: 0;
+    color: rgba(255, 255, 255, 0.7);
+  }
+
+  .hero-carousel__status span {
+    color: #fff;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .hero-carousel__status small {
+    overflow: hidden;
+    font-size: 12px;
+    text-overflow: ellipsis;
+    white-space: nowrap;
   }
 
   .hero-visual {
@@ -699,7 +760,7 @@
   }
 
   .topics-panel {
-    padding: 15px 14px;
+    display: none;
   }
 
   .topic-carousel {
@@ -1128,7 +1189,7 @@
 
 @media (max-width: 420px) {
   .page-title p {
-    font-size: 25px;
+    font-size: clamp(18px, 5.5vw, 21px);
   }
 
   .hero-copy h2 {

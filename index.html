@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Приемная кампания 2026 | Московский Политех</title>
-    <link rel="stylesheet" href="assets/css/styles.css">
-    <link rel="stylesheet" href="assets/css/mobile.css">
+    <link rel="stylesheet" href="assets/css/styles.css?v=20260724-3">
+    <link rel="stylesheet" href="assets/css/mobile.css?v=20260724-3">
   </head>
   <body class="dashboard-page">
     <div class="app-shell">
@@ -46,7 +46,15 @@
             </div>
           </aside>
 
-          <section class="hero-card" id="heroCard">
+          <section class="hero-card" id="heroCard" aria-label="Направления и темы" aria-roledescription="карусель" tabindex="0">
+            <div class="hero-carousel__controls" aria-label="Управление каруселью направлений">
+              <button type="button" data-hero-topic-prev aria-label="Предыдущее направление">‹</button>
+              <div class="hero-carousel__status">
+                <span id="heroTopicPosition" aria-live="polite">1 из 10</span>
+                <small>Свайпните карточку</small>
+              </div>
+              <button type="button" data-hero-topic-next aria-label="Следующее направление">›</button>
+            </div>
             <div class="hero-copy">
               <p class="eyebrow" id="heroEyebrow">Московский Политех</p>
               <h2 id="heroTitle">твой технологичный старт</h2>
@@ -104,6 +112,6 @@
     </div>
 
     <script src="assets/js/data.js"></script>
-    <script src="assets/js/app.js"></script>
+    <script src="assets/js/app.js?v=20260724-3"></script>
   </body>
 </html>

@@ -13,11 +13,17 @@
   const topicPrev = document.querySelector("[data-topic-prev]");
   const topicNext = document.querySelector("[data-topic-next]");
   const topicPosition = document.querySelector("#topicPosition");
+  const heroCard = document.querySelector("#heroCard");
+  const heroTopicPrev = document.querySelector("[data-hero-topic-prev]");
+  const heroTopicNext = document.querySelector("[data-hero-topic-next]");
+  const heroTopicPosition = document.querySelector("#heroTopicPosition");
   const mobileQuery = window.matchMedia("(max-width: 900px), (max-height: 500px) and (max-width: 1000px)");
+  const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const appShell = document.querySelector(".app-shell");
   let lastFocusedElement = null;
   let scriptsReturn = null;
   let topicScrollFrame = null;
+  let heroTouchStart = null;
 
   function icon(name) {
     const icons = {
@@ -78,6 +84,41 @@
     topicNext.disabled = safeIndex === items.length - 1;
   }
 
+  function currentHeroTopicIndex() {
+    const index = data.themes.findIndex((theme) => theme.id === activeTheme.id);
+    return index < 0 ? 0 : index;
+  }
+
+  function updateHeroCarousel() {
+    const index = currentHeroTopicIndex();
+    const total = data.themes.length;
+    if (heroTopicPosition) heroTopicPosition.textContent = `${index + 1} из ${total}`;
+    if (heroTopicPrev) heroTopicPrev.disabled = index === 0;
+    if (heroTopicNext) heroTopicNext.disabled = index === total - 1;
+  }
+
+  function animateHero(direction) {
+    if (!mobileQuery.matches || reduceMotion.matches) return;
+    const copy = heroCard?.querySelector(".hero-copy");
+    if (!copy || typeof copy.animate !== "function") return;
+    copy.animate([
+      { opacity: 0.35, transform: `translateX(${direction * 18}px)` },
+      { opacity: 1, transform: "translateX(0)" }
+    ], { duration: 180, easing: "ease-out" });
+  }
+
+  function selectHeroTopic(index) {
+    const safeIndex = Math.max(0, Math.min(index, data.themes.length - 1));
+    const nextTheme = data.themes[safeIndex];
+    if (!nextTheme || nextTheme.id === activeTheme.id) return;
+    const direction = safeIndex > currentHeroTopicIndex() ? 1 : -1;
+    activeTheme = nextTheme;
+    renderTopics();
+    renderHero();
+    updateHeroCarousel();
+    animateHero(direction);
+  }
+
   function scrollToTopic(index, focus = false) {
     const items = topicItems();
     const safeIndex = Math.max(0, Math.min(index, items.length - 1));
@@ -97,6 +138,7 @@
     document.querySelector("#heroTitle").textContent = activeTheme.shortTitle;
     document.querySelector("#heroDescription").textContent = activeTheme.description;
     document.querySelector("#heroPoints").innerHTML = activeTheme.points.map((point) => `<span>${point}</span>`).join("");
+    updateHeroCarousel();
   }
 
   function renderFaq(limit = 8) {
@@ -516,6 +558,36 @@
 
   topicPrev?.addEventListener("click", () => scrollToTopic(currentTopicIndex() - 1, true));
   topicNext?.addEventListener("click", () => scrollToTopic(currentTopicIndex() + 1, true));
+
+  heroTopicPrev?.addEventListener("click", () => selectHeroTopic(currentHeroTopicIndex() - 1));
+  heroTopicNext?.addEventListener("click", () => selectHeroTopic(currentHeroTopicIndex() + 1));
+
+  heroCard?.addEventListener("keydown", (event) => {
+    if (!mobileQuery.matches || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
+    if (event.target.closest("button, a")) return;
+    event.preventDefault();
+    selectHeroTopic(currentHeroTopicIndex() + (event.key === "ArrowRight" ? 1 : -1));
+  });
+
+  heroCard?.addEventListener("touchstart", (event) => {
+    if (!mobileQuery.matches || event.touches.length !== 1 || event.target.closest("button, a")) return;
+    const touch = event.touches[0];
+    heroTouchStart = { x: touch.clientX, y: touch.clientY };
+  }, { passive: true });
+
+  heroCard?.addEventListener("touchend", (event) => {
+    if (!mobileQuery.matches || !heroTouchStart || event.changedTouches.length !== 1) return;
+    const touch = event.changedTouches[0];
+    const deltaX = touch.clientX - heroTouchStart.x;
+    const deltaY = touch.clientY - heroTouchStart.y;
+    heroTouchStart = null;
+    if (Math.abs(deltaX) < 48 || Math.abs(deltaX) < Math.abs(deltaY) * 1.2) return;
+    selectHeroTopic(currentHeroTopicIndex() + (deltaX < 0 ? 1 : -1));
+  }, { passive: true });
+
+  heroCard?.addEventListener("touchcancel", () => {
+    heroTouchStart = null;
+  }, { passive: true });
 
   faqList.addEventListener("click", (event) => {
     const button = event.target.closest("[data-faq-index]");
