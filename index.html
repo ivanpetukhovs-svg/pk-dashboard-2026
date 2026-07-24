@@ -4,8 +4,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
     <title>Приемная кампания 2026 | Московский Политех</title>
-    <link rel="stylesheet" href="assets/css/styles.css?v=20260724-3">
-    <link rel="stylesheet" href="assets/css/mobile.css?v=20260724-3">
+    <link rel="stylesheet" href="assets/css/styles.css?v=20260724-6">
+    <link rel="stylesheet" href="assets/css/mobile.css?v=20260724-7">
   </head>
   <body class="dashboard-page">
     <div class="app-shell">
@@ -33,8 +33,8 @@
         <section class="dashboard-grid" aria-label="Главная панель">
           <aside class="topics-panel">
             <div class="panel-heading">
-              <p>Навигация</p>
-              <h2>Направления и темы</h2>
+              <p>9 направлений</p>
+              <h2>Направления подготовки</h2>
             </div>
             <div class="topic-carousel" aria-label="Карусель направлений">
               <div class="topic-carousel__controls">
@@ -47,10 +47,11 @@
           </aside>
 
           <section class="hero-card" id="heroCard" aria-label="Направления и темы" aria-roledescription="карусель" tabindex="0">
-            <div class="hero-carousel__controls" aria-label="Управление каруселью направлений">
+            <button class="hero-university-link" type="button" data-show-university hidden>← Московский Политех</button>
+            <div class="hero-carousel__controls" aria-label="Управление каруселью направлений" hidden>
               <button type="button" data-hero-topic-prev aria-label="Предыдущее направление">‹</button>
               <div class="hero-carousel__status">
-                <span id="heroTopicPosition" aria-live="polite">1 из 10</span>
+                <span id="heroTopicPosition" aria-live="polite">1 из 9</span>
                 <small>Свайпните карточку</small>
               </div>
               <button type="button" data-hero-topic-next aria-label="Следующее направление">›</button>
@@ -65,7 +66,7 @@
                   <span class="button-icon" aria-hidden="true">
                     <svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
                   </span>
-                  О направлении
+                  <span data-hero-primary-label>К направлениям</span>
                 </button>
                 <button class="secondary-action" type="button" data-open-scripts>
                   Скрипты
@@ -111,7 +112,7 @@
       </section>
     </div>
 
-    <script src="assets/js/data.js"></script>
-    <script src="assets/js/app.js?v=20260724-3"></script>
+    <script src="assets/js/data.js?v=20260724-5"></script>
+    <script src="assets/js/app.js?v=20260724-8"></script>
   </body>
 </html>

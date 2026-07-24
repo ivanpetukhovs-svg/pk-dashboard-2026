@@ -17,6 +17,10 @@
   const heroTopicPrev = document.querySelector("[data-hero-topic-prev]");
   const heroTopicNext = document.querySelector("[data-hero-topic-next]");
   const heroTopicPosition = document.querySelector("#heroTopicPosition");
+  const heroPrimaryLabel = document.querySelector("[data-hero-primary-label]");
+  const heroUniversityLink = document.querySelector("[data-show-university]");
+  const universityTheme = data.themes.find((theme) => theme.id === "polytech") || data.themes[0];
+  const directionThemes = data.themes.filter((theme) => theme.id !== "polytech");
   const mobileQuery = window.matchMedia("(max-width: 900px), (max-height: 500px) and (max-width: 1000px)");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
   const appShell = document.querySelector(".app-shell");
@@ -52,8 +56,7 @@
   }
 
   function renderTopics() {
-    const themes = data.themes.filter((theme) => theme.id !== "polytech");
-    topicList.innerHTML = themes.map((theme, index) => `
+    topicList.innerHTML = directionThemes.map((theme, index) => `
       <button class="topic-item ${theme.id === activeTheme.id ? "is-active" : ""}" type="button" data-theme-id="${theme.id}" data-topic-index="${index}" aria-pressed="${theme.id === activeTheme.id}" style="--topic-accent:${theme.accent}">
         <span class="topic-dot"></span>
         <span>${theme.menuTitle}</span>
@@ -85,16 +88,27 @@
   }
 
   function currentHeroTopicIndex() {
-    const index = data.themes.findIndex((theme) => theme.id === activeTheme.id);
-    return index < 0 ? 0 : index;
+    return directionThemes.findIndex((theme) => theme.id === activeTheme.id);
   }
 
   function updateHeroCarousel() {
     const index = currentHeroTopicIndex();
-    const total = data.themes.length;
-    if (heroTopicPosition) heroTopicPosition.textContent = `${index + 1} из ${total}`;
-    if (heroTopicPrev) heroTopicPrev.disabled = index === 0;
-    if (heroTopicNext) heroTopicNext.disabled = index === total - 1;
+    const isUniversityIntro = index < 0;
+    if (heroCard) {
+      heroCard.classList.toggle("is-university-intro", isUniversityIntro);
+      heroCard.setAttribute("aria-label", isUniversityIntro ? "О Московском Политехе" : "Направления подготовки");
+    }
+    const controls = heroTopicPosition?.closest(".hero-carousel__controls");
+    if (controls) controls.hidden = isUniversityIntro;
+    if (heroUniversityLink) heroUniversityLink.hidden = isUniversityIntro;
+    if (heroPrimaryLabel) heroPrimaryLabel.textContent = isUniversityIntro ? "К направлениям" : "О направлении";
+    if (isUniversityIntro) return;
+    if (heroTopicPosition) heroTopicPosition.textContent = `${index + 1} из ${directionThemes.length}`;
+    if (heroTopicPrev) {
+      heroTopicPrev.disabled = false;
+      heroTopicPrev.setAttribute("aria-label", index === 0 ? "Вернуться к карточке университета" : "Предыдущее направление");
+    }
+    if (heroTopicNext) heroTopicNext.disabled = index === directionThemes.length - 1;
   }
 
   function animateHero(direction) {
@@ -108,8 +122,8 @@
   }
 
   function selectHeroTopic(index) {
-    const safeIndex = Math.max(0, Math.min(index, data.themes.length - 1));
-    const nextTheme = data.themes[safeIndex];
+    const safeIndex = Math.max(-1, Math.min(index, directionThemes.length - 1));
+    const nextTheme = safeIndex < 0 ? universityTheme : directionThemes[safeIndex];
     if (!nextTheme || nextTheme.id === activeTheme.id) return;
     const direction = safeIndex > currentHeroTopicIndex() ? 1 : -1;
     activeTheme = nextTheme;
@@ -134,7 +148,7 @@
 
   function renderHero() {
     document.documentElement.style.setProperty("--active-accent", activeTheme.accent);
-    document.querySelector("#heroEyebrow").textContent = activeTheme.title;
+    document.querySelector("#heroEyebrow").textContent = activeTheme.eyebrow || activeTheme.title;
     document.querySelector("#heroTitle").textContent = activeTheme.shortTitle;
     document.querySelector("#heroDescription").textContent = activeTheme.description;
     document.querySelector("#heroPoints").innerHTML = activeTheme.points.map((point) => `<span>${point}</span>`).join("");
@@ -539,7 +553,7 @@
     activeTheme = data.themes.find((theme) => theme.id === button.dataset.themeId) || activeTheme;
     renderTopics();
     renderHero();
-    if (mobileQuery.matches) scrollToTopic(Number(button.dataset.topicIndex));
+    if (mobileQuery.matches && button.dataset.topicIndex) scrollToTopic(Number(button.dataset.topicIndex));
   });
 
   topicList.addEventListener("scroll", () => {
@@ -561,6 +575,7 @@
 
   heroTopicPrev?.addEventListener("click", () => selectHeroTopic(currentHeroTopicIndex() - 1));
   heroTopicNext?.addEventListener("click", () => selectHeroTopic(currentHeroTopicIndex() + 1));
+  heroUniversityLink?.addEventListener("click", () => selectHeroTopic(-1));
 
   heroCard?.addEventListener("keydown", (event) => {
     if (!mobileQuery.matches || !["ArrowLeft", "ArrowRight"].includes(event.key)) return;
@@ -613,7 +628,10 @@
     handleMaterial(data.materials[Number(button.dataset.materialIndex)]);
   });
 
-  document.querySelector("[data-open-theme]").addEventListener("click", () => openThemeModal());
+  document.querySelector("[data-open-theme]").addEventListener("click", () => {
+    if (activeTheme.id === universityTheme.id) selectHeroTopic(0);
+    else openThemeModal();
+  });
   document.querySelector("[data-open-scripts]").addEventListener("click", () => openScriptsModal());
   document.querySelector("[data-show-all-faq]").addEventListener("click", () => openAllFaq());
   document.querySelector("[data-open-deadlines]").addEventListener("click", () => openDeadlines());
