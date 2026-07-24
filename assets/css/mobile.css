@@ -436,6 +436,39 @@
     padding: 15px;
   }
 
+  .script-section {
+    padding: 0;
+  }
+
+  .script-section > summary {
+    grid-template-columns: auto minmax(0, 1fr) 15px;
+    gap: 10px;
+    min-height: 62px;
+    padding: 13px 14px;
+  }
+
+  .script-section > summary h2 {
+    font-size: clamp(20px, 5.8vw, 27px);
+  }
+
+  .script-section__index {
+    width: 34px;
+    height: 34px;
+    border-radius: 10px;
+    font-size: 12px;
+  }
+
+  .script-section__body {
+    gap: 10px;
+    padding: 12px;
+  }
+
+  .script-content-group {
+    gap: 9px;
+    padding: 13px;
+    border-radius: 13px;
+  }
+
   .method-cards,
   .method-hero__highlights,
   .term-grid,
