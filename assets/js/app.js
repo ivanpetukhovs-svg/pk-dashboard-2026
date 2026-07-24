@@ -632,7 +632,15 @@
     if (activeTheme.id === universityTheme.id) selectHeroTopic(0);
     else openThemeModal();
   });
-  document.querySelector("[data-open-scripts]").addEventListener("click", () => openScriptsModal());
+  document.querySelector("[data-open-scripts]").addEventListener("click", () => {
+    if (activeTheme.id === universityTheme.id) {
+      openScriptsModal();
+      return;
+    }
+
+    if (activeTheme.scriptFile) openLocalFile(activeTheme.scriptFile);
+    else openScriptsModal();
+  });
   document.querySelector("[data-show-all-faq]").addEventListener("click", () => openAllFaq());
   document.querySelector("[data-open-deadlines]").addEventListener("click", () => openDeadlines());
   document.querySelector("[data-close-modal]").addEventListener("click", closeModal);
